@@ -69,3 +69,80 @@ install.packages(c(
 1. Clone the repository
 2. Place the CSV files from the `data/` folder in your working directory
 3. Run scripts in order: `data_clean.R` → `robustness.r` → `regressions.R` → `shapley_decomp.R`
+
+## Replicating This Analysis for Your Own Tokens
+
+This section explains how to adapt the pipeline to analyze tokens and on-chain metrics of your own choosing.
+
+### Step 1: Pull Your Data with Artemis Sheets
+
+On-chain fundamentals are sourced using the [Artemis Sheets](https://www.artemis.xyz/) Google Sheets extension. For each sector you want to analyze, create a Google Sheet and use the Artemis extension to pull daily metrics for your token(s).
+
+The column structure expected by `data_clean.R` is:
+
+| Column | Content |
+|--------|---------|
+| date | `MM/DD/YYYY` format |
+| price | Daily close price (USD) |
+| metric_1 | Demand metric (e.g. volume) |
+| metric_2 | Engagement metric (e.g. DAU, deposits) |
+| metric_3 | Fee or revenue metric |
+| metric_4 | TVL |
+
+Multiple tokens can share a single sheet by placing each token's block in adjacent column groups separated by a blank column.
+
+### Step 2: Connect Your Sheet to `data_clean.R`
+
+The script reads data using `read_sheet()` from the `googlesheets4` package. Authenticate once with `gs4_auth()`, then point each call to your own sheet URL:
+
+```r
+gs4_auth()
+
+your_metrics     <- read_sheet("YOUR_SHEET_URL")
+```
+
+Then source it at the top of `data_clean.R`:
+
+```r
+source("sheets_config.R")
+dex_metrics <- read_sheet(DEX_SHEET)
+```
+
+### Step 3: Update Column Names and Token Tickers
+
+Each sector block in `data_clean.R` contains a `rename()` call that maps column positions to names following the pattern `TICKER_METRICNAME`. Replace all instances of the original tickers (e.g., `UNI`, `CAKE`, `AAVE`) with your own. These names propagate into `regressions.R` and `shapley_decomp.R`, so consistency across all three files is required.
+
+Columns are referenced by **position** in the initial `rename()` call. If your sheet has a different column count or ordering, update the position numbers before running.
+
+### Step 4: Compute Log-Difference Returns
+
+The regression uses log-differenced fundamentals as regressors. After renaming, add a `mutate()` block for each metric:
+
+```r
+delta_TOKEN_METRIC = log(TOKEN_METRIC / dplyr::lag(TOKEN_METRIC))
+```
+
+If a metric can take zero values (e.g., buybacks, token launches), use the `+1` offset used for PUMP to avoid undefined log values:
+
+```r
+delta_TOKEN_METRIC = log(TOKEN_METRIC + 1) / (dplyr::lag(TOKEN_METRIC) + 1)
+```
+
+### Step 5: Update `regressions.R` and `shapley_decomp.R`
+
+Both scripts are structured as token-by-token blocks. Add or replace blocks using the same pattern, with your token's return as the dependent variable and your log-differenced fundamentals alongside `crypto_mkt_beta_pca` as regressors:
+
+```r
+model_TOKEN_bull <- lm(
+  TOKEN_return ~ crypto_mkt_beta_pca + delta_TOKEN_METRIC1 + delta_TOKEN_METRIC2 + ...,
+  data = token_bull
+)
+```
+
+The market beta factor (PC1 of BTC/ETH/SOL log returns) and bull/bear regime classification (BTC 200-day moving average) are constructed automatically from Yahoo Finance via `tidyquant` and require no modification.
+
+### Notes
+
+- A minimum of roughly 60–90 observations per regime is advisable for stable Shapley decompositions. Tokens with short histories or sparse regime transitions may produce unreliable attribution estimates.
+- The script drops all rows with any `NA` via `drop_na()` at the end of each sector block. Missing days in your Artemis data will silently reduce your effective sample — check coverage before running.
+- `kernelshap` run time scales with the number of regressors. More than 6–7 features per model will noticeably increase computation time.

@@ -45,9 +45,9 @@ This study uses **Shapley value regression** to attribute token returns across f
 
 ```
 data_clean.R       # Data ingestion, cleaning, PCA market beta construction, regime classification
-regressions.R      # OLS regressions for each token × regime
-shapley_decomp.R   # Shapley value decomposition and heatmap visualization
 robustness.R       # Robustness checks
+regressions.R      # OLS regressions for each token and regime
+shapley_decomp.R   # Shapley value decomposition and heatmap visualization
 data/              # CSV files for all on-chain and price data
 ```
 
@@ -68,8 +68,4 @@ install.packages(c(
 
 1. Clone the repository
 2. Place the CSV files from the `data/` folder in your working directory
-3. Run scripts in order: `data_clean.R` → `regressions.R` → `shapley_decomp.R`
-
----
-
-*This project was produced as part of research conducted at the Oregon Blockchain Group, University of Oregon.*
+3. Run scripts in order: `data_clean.R` → `robustness.r` → `regressions.R` → `shapley_decomp.R`

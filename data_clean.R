@@ -45,7 +45,7 @@ crypto_returns <- crypto_returns %>%
 # ClEAN AND MUTATE DEX
 #-----------------------
 
-dex_metrics = read_sheet("https://docs.google.com/spreadsheets/d/1ZgRL3REaUXUwuh__WdwXBbP6aDBopsTJotOHJt37ydg/edit?gid=0#gid=0")
+dex_metrics = dex_metrics = read.csv("dex_metrics.csv")
 dex_metrics = dex_metrics[-1,]
 dex_metrics <- dex_metrics %>%
   rename(
@@ -156,7 +156,7 @@ dex_metrics = dex_metrics %>%
 # CLEAN AND MUTATE LENDING
 #--------------------------
 
-lending_metrics = read_sheet("https://docs.google.com/spreadsheets/d/1L3YDELLrqvHPAFSk692ipbtFUfNkegxRrXojh877O_c/edit?gid=0#gid=0")
+lending_metrics = read.csv("lending_metrics.csv")
 lending_metrics = lending_metrics[-1,]
 lending_metrics <- lending_metrics %>%
   rename(
@@ -237,7 +237,7 @@ lending_metrics = lending_metrics %>%
 # ClEAN AND MUTATE PERPS
 #--------------------------
 
-perp_metrics = read_sheet("https://docs.google.com/spreadsheets/d/1u7Osz3HJz5lyQpHR3HKD2YKd2X6cw5odf2FuT_0kzBE/edit?gid=0#gid=0")
+perp_metrics = read.csv("perp_metrics.csv")
 perp_metrics = perp_metrics[-1,]
 perp_metrics <- perp_metrics %>%
   rename(
@@ -291,7 +291,7 @@ perp_metrics = perp_metrics %>%
 # CLEAN AND MUTATE MISC
 #--------------------------
 
-misc_raw = read_sheet("https://docs.google.com/spreadsheets/d/12jaV8ef3zi3BLnRQ4aLfPpuACVAnxI3-O26oViQp9OI/edit?gid=0#gid=0")
+misc_raw = read.csv("misc_metrics.csv")
 misc_raw = misc_raw[-1,]
 
 # ETHFI

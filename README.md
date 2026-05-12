@@ -6,9 +6,9 @@
 
 ## Overview
 
-DeFi token prices are widely observed to move in lockstep with benchmark tokens like Bitcoin and Ethereum, but does that mean protocol fundamentals don't matter? This project investigates that question by decomposing DeFi token returns into two components — systematic market exposure (market beta) and protocol-specific fundamentals — and measuring how the relative contribution of each shifts across bull and bear market regimes.
+DeFi token prices are widely observed to move in lockstep with benchmark tokens like Bitcoin and Ethereum, but does that mean protocol fundamentals don't matter? This project investigates that question by decomposing DeFi token returns into two components: systematic market exposure (market beta) and protocol-specific fundamentals. Additionally, it measures how the relative contribution of each shifts across bull and bear market regimes.
 
-Rather than stopping at correlation, this study uses **Shapley value regression** to attribute token returns across four DeFi sectors: decentralized exchanges (DEX), lending, perpetuals, and a miscellaneous category. Market regimes are defined using a Bitcoin 200-day moving average filter.
+This study uses **Shapley value regression** to attribute token returns across four DeFi sectors: decentralized exchanges (DEX), lending, perpetuals, and a miscellaneous category. Market regimes are defined using a Bitcoin 200-day moving average filter.
 
 **Tokens analyzed:** UNI, CAKE, AERO, AAVE, MORPHO, HYPE, ETHFI, PUMP
 

@@ -139,10 +139,8 @@ model_TOKEN_bull <- lm(
 )
 ```
 
-The market beta factor (PC1 of BTC/ETH/SOL log returns) and bull/bear regime classification (BTC 200-day moving average) are constructed automatically from Yahoo Finance via `tidyquant` and require no modification.
-
 ### Notes
 
-- A minimum of roughly 60–90 observations per regime is advisable for stable Shapley decompositions. Tokens with short histories or sparse regime transitions may produce unreliable attribution estimates.
-- The script drops all rows with any `NA` via `drop_na()` at the end of each sector block. Missing days in your Artemis data will silently reduce your effective sample — check coverage before running.
+- A minimum of 60–90 observations per regime is recommended for stable Shapley decompositions. Tokens with short histories or sparse regime transitions may produce unreliable attribution estimates.
+- The script drops all rows with any `NA` via `drop_na()` at the end of each sector block. Missing days in your Artemis data will reduce your effective sample. 
 - `kernelshap` run time scales with the number of regressors. More than 6–7 features per model will noticeably increase computation time.
